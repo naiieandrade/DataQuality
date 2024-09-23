@@ -1,0 +1,10 @@
+{
+    "name": "Alice",
+    "age": 30,
+    "interests": ["programming", "data science"],
+    "address": {
+      "street": "Coder's Lane",
+      "number": 42
+    }
+  }
+  
