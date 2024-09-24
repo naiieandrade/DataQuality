@@ -16,6 +16,9 @@ class DataQuality:
                 return data
         elif extension == 'json':
             print('json')
+        elif extension == 'xlsx':
+            data = pd.read_excel(self.path) # Lê o arquivo Excel
+            return data
         else:
             print(f"Formato /'{extension}/' não reconhecido.")
 
