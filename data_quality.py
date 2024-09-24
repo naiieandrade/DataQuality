@@ -1,15 +1,19 @@
-import pandas as pd 
+import pandas as pd
 
 class DataQuality:
-    def __init__(self, path:str):
+    def __init__(self, path: str):
         self.path = path
         self.df = self.read_data()
 
     def read_data(self):
         extension = self.path.split('.')[-1]
         if extension == 'csv':
-            data = pd.read_csv(self.path)
-            return data
+            try:
+                data = pd.read_csv(self.path, encoding='utf-8')
+                return data
+            except UnicodeDecodeError:
+                data = pd.read_csv(self.path, encoding='latin-1')  # Tenta ler com outra codificação
+                return data
         elif extension == 'json':
             print('json')
         else:
@@ -21,12 +25,11 @@ class DataQuality:
 
         print(f"Colunas do dataframe {self.path}\n")
         for _ in list(self.df.columns):
-            print (f"{n}: {_}")
+            print(f"{n}: {_}")
             n += 1
-        
+
         print('\n')
-        #return self.df.columns
-        
+
     def count_nulls(self):
         print("Quantidade de valores nulos por coluna:")
         print(self.df.isna().sum())
@@ -41,3 +44,5 @@ class DataQuality:
         Retorna o relatório completo quando o objeto é chamado diretamente no Jupyter Notebook ou terminal.
         """
         return self.profile() or ''
+
+
