@@ -9,11 +9,12 @@ class DataQuality:
         extension = self.path.split('.')[-1]
         if extension == 'csv':
             try:
-                data = pd.read_csv(self.path, encoding='utf-8')
+                data = pd.read_csv(self.path, encoding='utf-8', on_bad_lines='skip')
                 return data
             except UnicodeDecodeError:
-                data = pd.read_csv(self.path, encoding='latin-1')  # Tenta ler com outra codificação
+                data = pd.read_csv(self.path, encoding='latin-1', on_bad_lines='skip')  # Tenta ler com outra codificação
                 return data
+                
         elif extension == 'json':
             print('json')
         elif extension == 'xlsx':
@@ -32,6 +33,8 @@ class DataQuality:
             n += 1
 
         print('\n')
+    
+    #def show_categories_columns(self):
 
     def count_nulls(self):
         print("Quantidade de valores nulos por coluna:")
