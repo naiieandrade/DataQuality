@@ -1,4 +1,9 @@
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+pd.set_option('display.float_format', lambda x: '%.2f' % x)
+
 
 class DataQuality:
     def __init__(self, path: str):
@@ -79,7 +84,7 @@ class DataQuality:
             for col in cat_columns:
                 pct_unique_values = self.df[col].unique().size/self.df.size
                 print(f"{n}: {col} possui {self.df[col].unique().size} valores únicos.")
-                if (pct_unique_values) > 0.9:
+                if (pct_unique_values) > 0.5:
                     print("Provavelmente é uma coluna de ID ou texto.")
                 n += 1
         print("\n")
@@ -98,6 +103,48 @@ class DataQuality:
                 n += 1
                 print("\n")
         print("\n")
+        # ver quando o value counts o 'maior é 1
+
+    def describe(self):
+        num_columns = self.df.select_dtypes(include=np.number).columns.tolist()
+        print("Dados das colunas numéricas: ")
+        #print(self.df[num_columns].describe())
+        for col in num_columns:
+            if self.df[col].isna().sum() == len(self.df):
+                print(f"{col} tem {self.df[col].isna().sum()} dados vazios")
+            else:
+                print(f"{self.df[col].describe()}")
+            print("\n")
+
+    def histogram(self):
+        num_columns = self.df.select_dtypes(include=np.number).columns.tolist()
+        print("Histograma das colunas numéricas")
+        #df_len = len(self.df.select_dtypes(include=np.number))
+        num_bins = 100
+        # if df_len > 500:
+        #     num_bins = 15
+        # elif df_len >= 500 & df <
+        #print(self.df[num_columns].describe())
+        for col in num_columns:
+            if self.df[col].isna().sum() != len(self.df):
+                plt.figure() 
+                self.df[col].hist(bins=num_bins)
+                plt.title(f"Histograma da coluna '{col}'")
+                plt.xlabel(col)
+                plt.ylabel('Frequência')
+                plt.show()  # Exibe o gráfico atual
+            print("\n")
+
+    def plot_categories(self):
+        cat_columns = self.df.select_dtypes(exclude=np.number).columns.tolist()
+        for col in cat_columns:
+            if len(self.df[col].value_counts()) < 20:
+                plt.figure()
+                self.df[col].value_counts().plot(kind='barh')
+                plt.title(f"Distribuição por categorias '{col}'")
+                plt.xlabel('Quantidade')
+                plt.ylabel(col)
+                plt.show()  # Exibe o gráfico atual
         
     def profile(self):
         print("Iniciando análise dos dados e gerando relatório...")
@@ -108,6 +155,9 @@ class DataQuality:
         self.count_just_columns_with_nulls()
         self.unique_values()
         self.value_counts()
+        self.describe()
+        self.histogram()
+        self.plot_categories()
         
 
     def __repr__(self):
