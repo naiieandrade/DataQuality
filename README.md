@@ -24,10 +24,10 @@ Abaixo está a estrutura de arquivos do projeto:
 ├── data_quality.py 
 
 #### Jupyter Notebook que utiliza o módulo para análises
-├── dotebook.ipynb 
+├── notebook.ipynb 
 
 #### Pasta contendo os datasets para análise
-├── dinput 
+├── input 
 
 # Como Usar
 
