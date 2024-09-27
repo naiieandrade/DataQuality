@@ -145,6 +145,14 @@ class DataQuality:
                 plt.xlabel('Quantidade')
                 plt.ylabel(col)
                 plt.show()  # Exibe o gráfico atual
+                
+    def correlation(self):
+        num_columns = self.df.select_dtypes(include=np.number).columns.tolist()
+        if len(num_columns) > 1:
+            print("Correlação entre as colunas numéricas:")
+            print(self.df[num_columns].corr())
+        else:
+            print("Não há colunas numéricas suficientes para calcular a correlação.")
         
     def profile(self):
         print("Iniciando análise dos dados e gerando relatório...")
@@ -158,6 +166,8 @@ class DataQuality:
         self.describe()
         self.histogram()
         self.plot_categories()
+        self.correlation()
+        print("Análise finalizada.")
         
 
     def __repr__(self):
