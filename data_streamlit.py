@@ -65,6 +65,9 @@ class DataQuality:
 
     def show_columns(self):
 
+        # Adicionar subtítulo
+        st.subheader("Dados gerais do dataset")
+
         num_variables = len(self.df.columns)
         num_observations = len(self.df)
         missing_values = self.df.isna().sum().sum()
@@ -92,16 +95,21 @@ class DataQuality:
 
         with col6:
             st.metric("Linhas duplicadas", f"{self.df.duplicated().sum()/len(self.df)*100:.2f}%")
+        st.write("")
+        st.write("")
+
     
     def show_types_of_columns(self):
-        
-        st.write("Tipos de categorias das colunas")
+        # Adicionar subtítulo
+        st.subheader("Tipos de categorias das colunas")
+        st.write("")
         
         tipos = {
         'Categórica': [],
         'Numérica': [],
         'Texto': [],
-        'Booleana': []
+        'Booleana': [],
+        'Outros': []
     }
     
         for col in self.df.columns:
@@ -117,22 +125,54 @@ class DataQuality:
             elif pd.api.types.is_string_dtype(self.df[col]):
                 # Colunas de texto: strings (exceto as categorizadas)
                 tipos['Texto'].append(col)
+            else:
+                tipos['Outros'].append(col)
 
         
         # Dividir em colunas para exibir as métricas em cards na mesma linha
-        col1, col2, col3, col4 = st.columns(4)
+        col1, col2, col3, col4, col5 = st.columns(5)
 
         with col1:
-            st.metric("Categórica", ", ".join([f"'{col}'" for col in tipos['Categórica']]))
+            st.metric("Categórica", len(tipos['Categórica']))
 
         with col2:
-            st.metric("Booleana", ", ".join([f"'{col}'" for col in tipos['Booleana']]))
+            st.metric("Booleana", len(tipos['Booleana']))
 
         with col3:
-            st.metric("Numérica", ", ".join([f"'{col}'" for col in tipos['Numérica']]))
+            st.metric("Numérica", len(tipos['Numérica']))
 
         with col4:
-            st.metric("Texto", ", ".join([f"'{col}'" for col in tipos['Texto']]))  
+            st.metric("Texto", len(tipos['Texto']))
+        
+        with col5:
+            st.metric("Outros", len(tipos['Outros']))
+
+        st.markdown("---")
+        
+        
+        
+        # # Espaço entre elementos usando st.write("")
+        # st.write("")  # Um espaço em branco
+        # st.write("Aqui vai uma métrica importante")
+        
+        # # Separador horizontal usando Markdown
+        # st.markdown("---")
+        
+        # # Adicionar mais métricas
+        # st.write("Outra métrica importante")
+        
+        # # Outro separador horizontal
+        # st.markdown("---")
+        
+        # # Espaço adicional com st.write("\n")
+        # st.write("\n")
+        
+        # # Adicionar um espaço em branco usando st.empty()
+        # st.empty()
+        
+        # # Adicionar uma linha de texto separando
+        # st.write("Informações Adicionais")
+
 
         
 
@@ -196,7 +236,9 @@ class DataQuality:
         tabs = st.tabs(["📈 Geral", "🗃 Colunas"]) 
 
         with tabs[0]:  # Aba "Geral"
-            st.header("Relatório Geral")
+            # Adicionar um título
+            st.title("Relatório de Qualidade de Dados")
+            #st.header("Relatório Geral")
             self.show_columns()
             self.show_types_of_columns()
             self.count_nulls()
