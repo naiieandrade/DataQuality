@@ -65,33 +65,11 @@ class DataQuality:
 
     def show_columns(self):
 
-        # total_values = self.df.shape[0]*self.df.shape[1]
-
         num_variables = len(self.df.columns)
         num_observations = len(self.df)
         missing_values = self.df.isna().sum().sum()
         total_values = self.df.size
         missing_percentage = (missing_values / total_values) * 100
-        
-        # Exibir os dados no formato solicitado
-        # st.write("### Dados de Qualidade")
-        # st.metric("Number of Variables", num_variables)
-        # st.metric("Number of Observations", num_observations)
-        # st.metric("Missing Cells", missing_cells)
-        # st.metric("Missing Cells (%)", f"{missing_percentage:.2f}%")
-        
-        # st.write(f"Colunas do dataframe {self.path}\n")
-        # st.write(f"Quantidade de colunas: {len(self.df.columns)}")
-        # data = pd.DataFrame({"Quantidade de colunas:": self.df.shape[1],
-        #                      "Linhas totais:": self.df.shape[0],
-        #                      "Campos vazios:": missing_values,
-        #                      "% Campos vazios:": "{:.2f}%".format(missing_values/total_values*100),
-        #                      "Linhas duplicadas:": self.df.duplicated().sum()
-        #                    }, index=[0]) #self.df.isna().sum().sum()/self.df.shape[0]*self.df.shape[1]*100
-        # #{:.2f}%".format(missing_percentage)
-        # data = data.T
-        # data.columns = [''] 
-        # st.table(data)
 
         # Dividir em colunas para exibir as métricas em cards na mesma linha
         col1, col2, col3 = st.columns(3)
@@ -114,7 +92,49 @@ class DataQuality:
 
         with col6:
             st.metric("Linhas duplicadas", f"{self.df.duplicated().sum()/len(self.df)*100:.2f}%")
+    
+    def show_types_of_columns(self):
+        
+        st.write("Tipos de categorias das colunas")
+        
+        tipos = {
+        'Categórica': [],
+        'Numérica': [],
+        'Texto': [],
+        'Booleana': []
+    }
+    
+        for col in self.df.columns:
+            if isinstance(self.df[col].dtype, pd.CategoricalDtype) or (self.df[col].dtype == 'object' and self.df[col].nunique() < 20):
+                # Colunas categóricas: identificadas como 'category' ou 'object' com poucos valores únicos
+                tipos['Categórica'].append(col)
+            elif pd.api.types.is_bool_dtype(self.df[col]):
+                # Colunas booleanas: True/False
+                tipos['Booleana'].append(col)
+            elif pd.api.types.is_numeric_dtype(self.df[col]):
+                # Colunas numéricas: inteiros ou floats
+                tipos['Numérica'].append(col)
+            elif pd.api.types.is_string_dtype(self.df[col]):
+                # Colunas de texto: strings (exceto as categorizadas)
+                tipos['Texto'].append(col)
 
+        
+        # Dividir em colunas para exibir as métricas em cards na mesma linha
+        col1, col2, col3, col4 = st.columns(4)
+
+        with col1:
+            st.metric("Categórica", ", ".join([f"'{col}'" for col in tipos['Categórica']]))
+
+        with col2:
+            st.metric("Booleana", ", ".join([f"'{col}'" for col in tipos['Booleana']]))
+
+        with col3:
+            st.metric("Numérica", ", ".join([f"'{col}'" for col in tipos['Numérica']]))
+
+        with col4:
+            st.metric("Texto", ", ".join([f"'{col}'" for col in tipos['Texto']]))  
+
+        
 
     def show_categories_columns(self):
         cat_columns = self.df.select_dtypes(exclude=np.number).columns.tolist()
@@ -178,6 +198,7 @@ class DataQuality:
         with tabs[0]:  # Aba "Geral"
             st.header("Relatório Geral")
             self.show_columns()
+            self.show_types_of_columns()
             self.count_nulls()
             self.count_just_columns_with_nulls()
             self.describe()
