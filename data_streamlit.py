@@ -173,8 +173,41 @@ class DataQuality:
         # # Adicionar uma linha de texto separando
         # st.write("Informações Adicionais")
 
+    def count_nulls(self):
+        # st.subheader("Quantidade de valores nulos por coluna:")
+        # st.write("")
+        # st.write(self.df.isna().sum())
+        # st.write("")
+        # st.write("")
+        st.subheader("Quantidade de valores nulos por coluna:")
+        st.write("")
+        #st.dataframe(self.df.isna().sum(),use_container_width=True)  # Exibe a tabela de forma interativa
+        #st.write("")
 
-        
+        nulos = self.df.isna().sum().sort_values(ascending=False)
+
+        # Checkbox para filtrar colunas que não têm nulos
+        filtrar_nulos = st.checkbox("Mostrar apenas colunas sem valores nulos")
+
+        if filtrar_nulos:
+            # Filtrar apenas as colunas que não têm nulos
+            colunas_sem_nulos = nulos[nulos == 0]
+            st.subheader("Colunas sem valores nulos:")
+            st.dataframe(colunas_sem_nulos, use_container_width=True)
+        else:
+            # st.subheader("Quantidade de valores nulos por coluna:")
+            st.write("A tabela é interativa, podendo ordenar por coluna.")
+            st.dataframe(nulos, use_container_width=True)
+
+
+
+    def count_just_columns_with_nulls(self):
+        cols_with_nulls = self.df.isna().sum().sort_values(ascending=False).loc[lambda x: x > 0]
+        if len(cols_with_nulls) > 0:
+            st.write("Apenas colunas com valores nulos:")
+            st.write(cols_with_nulls)
+        else:
+            st.write("Não tem colunas com valores nulos.")
 
     def show_categories_columns(self):
         cat_columns = self.df.select_dtypes(exclude=np.number).columns.tolist()
@@ -192,17 +225,7 @@ class DataQuality:
         else:
             st.write("Esse dataset não tem colunas numéricas")
 
-    def count_nulls(self):
-        st.write("Quantidade de valores nulos por coluna:")
-        st.write(self.df.isna().sum())
-
-    def count_just_columns_with_nulls(self):
-        cols_with_nulls = self.df.isna().sum().sort_values(ascending=False).loc[lambda x: x > 0]
-        if len(cols_with_nulls) > 0:
-            st.write("Apenas colunas com valores nulos:")
-            st.write(cols_with_nulls)
-        else:
-            st.write("Não tem colunas com valores nulos.")
+    
 
     def describe(self):
         st.write("Estatísticas descritivas das colunas numéricas:")
@@ -242,7 +265,7 @@ class DataQuality:
             self.show_columns()
             self.show_types_of_columns()
             self.count_nulls()
-            self.count_just_columns_with_nulls()
+            #self.count_just_columns_with_nulls()
             self.describe()
             self.histogram()
 
