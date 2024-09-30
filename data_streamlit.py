@@ -1,42 +1,5 @@
 import streamlit as st
 import pandas as pd
-
-class DataQuality:
-    def __init__(self, path: str):
-        self.path = path
-        self.df = self.read_data()
-
-    def read_data(self):
-        return pd.read_csv(self.path)
-
-    def generate_summary(self):
-        # Calcular as informações desejadas
-        num_variables = len(self.df.columns)
-        num_observations = len(self.df)
-        missing_cells = self.df.isna().sum().sum()
-        total_cells = self.df.size
-        missing_percentage = (missing_cells / total_cells) * 100
-        
-        # Dividir em colunas para exibir as métricas em cards na mesma linha
-        col1, col2, col3, col4 = st.columns(4)
-
-        with col1:
-            st.metric("Number of Variables", num_variables)
-
-        with col2:
-            st.metric("Number of Observations", num_observations)
-
-        with col3:
-            st.metric("Missing Cells", missing_cells)
-
-        with col4:
-            st.metric("Missing Cells (%)", f"{missing_percentage:.2f}%")
-
-
-
-
-import streamlit as st
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -53,7 +16,7 @@ class DataQuality:
                 return data
             except UnicodeDecodeError:
                 data = pd.read_csv(self.path, encoding='latin-1', on_bad_lines='skip')  # Tenta ler com outra codificação
-                return data
+                return data1
                 
         elif extension == 'json':
             print('json')
@@ -149,40 +112,11 @@ class DataQuality:
 
         st.markdown("---")
         
-        
-        
-        # # Espaço entre elementos usando st.write("")
-        # st.write("")  # Um espaço em branco
-        # st.write("Aqui vai uma métrica importante")
-        
-        # # Separador horizontal usando Markdown
-        # st.markdown("---")
-        
-        # # Adicionar mais métricas
-        # st.write("Outra métrica importante")
-        
-        # # Outro separador horizontal
-        # st.markdown("---")
-        
-        # # Espaço adicional com st.write("\n")
-        # st.write("\n")
-        
-        # # Adicionar um espaço em branco usando st.empty()
-        # st.empty()
-        
-        # # Adicionar uma linha de texto separando
-        # st.write("Informações Adicionais")
 
     def count_nulls(self):
-        # st.subheader("Quantidade de valores nulos por coluna:")
-        # st.write("")
-        # st.write(self.df.isna().sum())
-        # st.write("")
-        # st.write("")
+
         st.subheader("Quantidade de valores nulos por coluna:")
         st.write("")
-        #st.dataframe(self.df.isna().sum(),use_container_width=True)  # Exibe a tabela de forma interativa
-        #st.write("")
 
         nulos = self.df.isna().sum().sort_values(ascending=False)
 
@@ -198,7 +132,9 @@ class DataQuality:
             # st.subheader("Quantidade de valores nulos por coluna:")
             st.write("A tabela é interativa, podendo ordenar por coluna.")
             st.dataframe(nulos, use_container_width=True)
-
+        
+        st.write("")
+        st.write("")
 
 
     def count_just_columns_with_nulls(self):
