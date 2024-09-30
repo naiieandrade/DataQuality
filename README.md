@@ -1,11 +1,11 @@
-# Projeto TecProg
+# Projeto de Técnicas de Programação
 
 Este projeto foi desenvolvido como parte da conclusão da disciplina de Técnicas de Programação 1 do curso de Engenharia de Dados da [Ada Tech](https://ada.tech/sou-aluno/programas/santander-coders-2024) em parceria com o Santander Coders. 
 O objetivo é criar um módulo de Data Quality utilizando Programação Orientada a Objetos (POO), que será importado em um Jupyter Notebook para gerar relatórios de análise de datasets.
 
 ## Descrição do Projeto
 
-O módulo desenvolvido permitirá realizar análises de qualidade em qualquer conjunto de dados (dataset). As principais funcionalidades incluem:
+O módulo desenvolvido permitirá realizar análises de qualidade em qualquer conjunto de dados (dataset) apenas em csv e excel a princípio. As principais funcionalidades incluem:
 
 - **Contagem de Nulos**: Identificação e contagem de valores nulos em cada coluna do dataset.
 - **Contagem de Valores Únicos**: Cálculo da quantidade de valores únicos presentes em cada coluna.
@@ -20,7 +20,7 @@ O módulo desenvolvido permitirá realizar análises de qualidade em qualquer co
 Abaixo está a estrutura de arquivos do projeto:
 
 #### Módulo principal para análise de qualidade de dados 
-├── .gitignore 
+├── .gitignore     
 ├── data_quality.py 
 
 #### Jupyter Notebook que utiliza o módulo para análises
