@@ -30,6 +30,7 @@ Abaixo está a estrutura de arquivos do projeto:
 ├── input 
 
 # Como Usar
+## Jupyter Notebook
 
 1. **Clone o repositório**:
    ```bash
@@ -41,6 +42,23 @@ Abaixo está a estrutura de arquivos do projeto:
 3. **Execute o Jupyter Notebook**: Navegue até o diretório do projeto e inicie o Jupyter Notebook:
    ```bash
    jupyter notebook notebook.ipynb
+
+## Streamlit
+1. **Recomenda-se o uso de ambiente virtual (venv, conda ou docker)**:
+   ```bash
+   git clone https://github.com/naiieandrade/DataQuality.git
+2. **Instale as dependências**: Certifique-se de ter o Python e o Jupyter Notebook instalados. Você pode instalar as dependências necessárias usando:
+
+   ```bash
+   pip install -r requirements.txt
+3. **Execute o Streamlit**: Navegue até o diretório do projeto e inicie o streamlit e clique no link que ele mostrar que irá abrir no navegador:
+   ```bash
+   streamlit run data_streamlit.py
+4. **Abra o arquivo CSV**: A tela fica igual a imagem mostrada. Clique no botão "Browser files" e adicione o arquivo csv.
+![alt text](image.png)
+5. **Relatório de Qualidade**: Será mostrado o relatório sobre os dados, como mostra a imagem.
+![alt text](image-1.png)
+
 # Contribuição
 Contribuições são bem-vindas! Se você deseja contribuir, sinta-se à vontade para abrir uma issue ou enviar um pull request.
 
