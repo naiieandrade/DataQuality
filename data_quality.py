@@ -19,9 +19,6 @@ class DataQuality:
             except UnicodeDecodeError:
                 data = pd.read_csv(self.path, encoding='latin-1', on_bad_lines='skip')  # Tenta ler com outra codificação
                 return data
-                
-        elif extension == 'json':
-            print('json')
         elif extension == 'xlsx':
             data = pd.read_excel(self.path) # Lê o arquivo Excel
             return data

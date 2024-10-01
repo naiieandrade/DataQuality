@@ -2,6 +2,10 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+import plotly.figure_factory as ff
+import plotly.express as px
+
 
 class DataQuality:
     def __init__(self, path: str):
@@ -9,17 +13,18 @@ class DataQuality:
         self.df = self.read_data()
 
     def read_data(self):
-        extension = self.path.split('.')[-1]
+        
+        extension = self.path.name.split('.')[-1]
         if extension == 'csv':
             try:
                 data = pd.read_csv(self.path, encoding='utf-8', on_bad_lines='skip')
                 return data
             except UnicodeDecodeError:
                 data = pd.read_csv(self.path, encoding='latin-1', on_bad_lines='skip')  # Tenta ler com outra codificação
-                return data1
+                return data
                 
-        elif extension == 'json':
-            print('json')
+        #elif extension == 'json':
+        #    print('json')
         elif extension == 'xlsx':
             data = pd.read_excel(self.path) # Lê o arquivo Excel
             return data
@@ -164,20 +169,45 @@ class DataQuality:
     
 
     def describe(self):
-        st.write("Estatísticas descritivas das colunas numéricas:")
-        st.write(self.df.describe())
+        st.subheader("Estatísticas descritivas das colunas numéricas")
+        st.write("Não mostra colunas vazias.")
+        num_columns = self.df.select_dtypes(include=np.number).columns.tolist()
+
+        num_columns_nonzeros = []
+        for col in num_columns:
+            if int(self.df[col].isna().sum()) != len(self.df):
+                num_columns_nonzeros.append(col)
+        st.dataframe(self.df[num_columns_nonzeros].describe().map(lambda x: round(x,2)))
+        #st.write(self.df.describe())
+
+    def show_lines(self):
+        st.subheader("Dados da tabela")
+        #st.write("Não mostra colunas vazias.")
+
+        option = st.selectbox(
+            "Selecione a opção de ver as linhas iniciais ou finais do dataframe.",
+            ("Linhas iniciais", "Linhas finais"),
+        )
+        
+        st.write("Selecionado:", option)
+        if option == 'Linhas iniciais':
+            st.dataframe(self.df.head(10).apply(lambda x: round(x,2)))
+        if option == 'Linhas finais':
+            st.dataframe(self.df.tail(10).apply(lambda x: round(x,2)))
+    
 
     def histogram(self):
-        num_columns = self.df.select_dtypes(include=np.number).columns.tolist()
-        st.write("Histograma das colunas numéricas:")
+        st.write("")
+        st.subheader("Histograma das colunas numéricas")
+        num_columns = self.df.select_dtypes(include=np.number).columns.tolist()        
+        
         for col in num_columns:
             if self.df[col].isna().sum() != len(self.df):
-                fig, ax = plt.subplots()
-                self.df[col].hist(bins=50, ax=ax)
-                ax.set_title(f"Histograma da coluna '{col}'")
-                ax.set_xlabel(col)
-                ax.set_ylabel('Frequência')
-                st.pyplot(fig)
+
+                fig = px.histogram(self.df, x=col, nbins=50, title=f"Distribuição da coluna {col}")
+                fig.update_layout(yaxis_title="Frequência") 
+
+                st.plotly_chart(fig, use_container_width=True)
 
     def plot_categories(self):
         cat_columns = self.df.select_dtypes(exclude=np.number).columns.tolist()
@@ -191,11 +221,9 @@ class DataQuality:
                 st.pyplot(fig)
 
     def profile(self):
-        # Abas no Streamlit
         tabs = st.tabs(["📈 Geral", "🗃 Colunas"]) 
 
         with tabs[0]:  # Aba "Geral"
-            # Adicionar um título
             st.title("Relatório de Qualidade de Dados")
             #st.header("Relatório Geral")
             self.show_columns()
@@ -203,6 +231,7 @@ class DataQuality:
             self.count_nulls()
             #self.count_just_columns_with_nulls()
             self.describe()
+            self.show_lines()
             self.histogram()
 
         with tabs[1]:  # Aba "Colunas"
@@ -212,11 +241,10 @@ class DataQuality:
             self.show_numerical_columns()
             self.plot_categories()
 
-# Código para rodar a aplicação Streamlit
 
-# Carregar o arquivo
-#uploaded_file = st.file_uploader("Envie seu arquivo CSV ou JSON", type=["csv", "json", "xlsx"])
+uploaded_file = st.file_uploader("Envie seu arquivo CSV", type=["csv"])
 
-#if uploaded_file is not None:
-dq = DataQuality("input/gula.csv")
-dq.profile()
+
+if uploaded_file is not None:
+    dq = DataQuality(uploaded_file)
+    dq.profile()
